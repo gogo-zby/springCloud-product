@@ -10,6 +10,7 @@ import com.hmily.product.vo.ProductVO;
 import com.hmily.product.vo.ResultVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,6 +36,7 @@ public class ProductController {
      * 4. 构造数据
      */
     @GetMapping("/list")
+    @CrossOrigin(allowCredentials = "true")
     public ResultVO<ProductVO> list() {
         //1. 查询所有在架的商品
         List<ProductInfo> productInfoList = productService.findUpAll();
