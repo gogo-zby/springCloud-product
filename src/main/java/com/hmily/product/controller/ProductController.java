@@ -70,4 +70,9 @@ public class ProductController {
         return ResultVOUtil.success(productVOList);
     }
 
+    @GetMapping("/test")
+    public ResultVO test(){
+        return list();
+    }
+
 }
