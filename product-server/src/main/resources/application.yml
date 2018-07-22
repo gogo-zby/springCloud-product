@@ -12,3 +12,6 @@ spring:
     password: Osming07.
   jpa:
     show-sql: true
+logging:
+  level:
+    org.springframework.cloud.netflix.feign: debug
