@@ -2,18 +2,17 @@ package com.hmily.product.controller;
 
 import com.hmily.product.dataobject.ProductCategory;
 import com.hmily.product.dataobject.ProductInfo;
+import com.hmily.product.dto.CartDTO;
 import com.hmily.product.service.CategoryService;
 import com.hmily.product.service.ProductService;
 import com.hmily.product.utils.ResultVOUtil;
 import com.hmily.product.vo.ProductInfoVO;
 import com.hmily.product.vo.ProductVO;
 import com.hmily.product.vo.ResultVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +20,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/product")
+@Slf4j
 public class ProductController {
 
     @Autowired
@@ -51,13 +51,13 @@ public class ProductController {
 
         //4. 构造数据
         List<ProductVO> productVOList = new ArrayList<>();
-        for (ProductCategory productCategory: categoryList) {
+        for (ProductCategory productCategory : categoryList) {
             ProductVO productVO = new ProductVO();
             productVO.setCategoryName(productCategory.getCategoryName());
             productVO.setCategoryType(productCategory.getCategoryType());
 
             List<ProductInfoVO> productInfoVOList = new ArrayList<>();
-            for (ProductInfo productInfo: productInfoList) {
+            for (ProductInfo productInfo : productInfoList) {
                 if (productInfo.getCategoryType().equals(productCategory.getCategoryType())) {
                     ProductInfoVO productInfoVO = new ProductInfoVO();
                     //从productInfo拷贝到productInfoVO
@@ -72,9 +72,20 @@ public class ProductController {
         return ResultVOUtil.success(productVOList);
     }
 
-    @GetMapping("/test")
-    public ResultVO test(){
-        return list();
+    /**
+     * 获取商品列表（给订单服务用）
+     *
+     * @param productIdList
+     * @return
+     */
+    @PostMapping("/listForOrder")
+    public List<ProductInfo> listForOrder(@RequestBody List<String> productIdList) {
+        log.info("list={}", productIdList);
+        return productService.findByProductIdIn(productIdList);
     }
 
+    @PostMapping("/decreaseStock")
+    public void decreaseStock(@RequestBody List<CartDTO> cartDTOList){
+        productService.decreaseStock(cartDTOList);
+    }
 }

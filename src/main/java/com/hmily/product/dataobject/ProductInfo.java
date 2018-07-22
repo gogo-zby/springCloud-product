@@ -51,4 +51,8 @@ public class ProductInfo {
      * '修改时间'
      */
     private Date updateTime;
+
+    public ProductInfo(){
+
+    }
 }
