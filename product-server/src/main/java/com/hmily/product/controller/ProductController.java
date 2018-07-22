@@ -1,8 +1,9 @@
 package com.hmily.product.controller;
 
+import com.hmily.product.common.DecreaseStockInput;
+import com.hmily.product.common.ProductInfoOutput;
 import com.hmily.product.dataobject.ProductCategory;
 import com.hmily.product.dataobject.ProductInfo;
-import com.hmily.product.dto.CartDTO;
 import com.hmily.product.service.CategoryService;
 import com.hmily.product.service.ProductService;
 import com.hmily.product.utils.ResultVOUtil;
@@ -79,13 +80,13 @@ public class ProductController {
      * @return
      */
     @PostMapping("/listForOrder")
-    public List<ProductInfo> listForOrder(@RequestBody List<String> productIdList) {
+    public List<ProductInfoOutput> listForOrder(@RequestBody List<String> productIdList) {
         log.info("list={}", productIdList);
         return productService.findByProductIdIn(productIdList);
     }
 
     @PostMapping("/decreaseStock")
-    public void decreaseStock(@RequestBody List<CartDTO> cartDTOList){
-        productService.decreaseStock(cartDTOList);
+    public void decreaseStock(@RequestBody List<DecreaseStockInput> decreaseStockInputList) {
+        productService.decreaseStock(decreaseStockInputList);
     }
 }
