@@ -82,6 +82,11 @@ public class ProductController {
     @PostMapping("/listForOrder")
     public List<ProductInfoOutput> listForOrder(@RequestBody List<String> productIdList) {
         log.info("list={}", productIdList);
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            log.error("listForOrder : {}", e);
+        }
         return productService.findByProductIdIn(productIdList);
     }
 

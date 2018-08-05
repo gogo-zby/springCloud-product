@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: product
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: CONFIG
+      profile: dev
+  rabbitmq:
+        host: 192.168.0.7
+        port: 5672
+        username: guest
+        password: guest
+management:
+#  context-path: /
+  server:
+    servlet:
+      context-path: /
+logging:
+  level:
+    org.springframework.cloud.netflix.feign: debug

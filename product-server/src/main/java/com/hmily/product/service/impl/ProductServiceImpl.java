@@ -8,6 +8,8 @@ import com.hmily.product.enums.ResultStatusEnum;
 import com.hmily.product.exception.ProductException;
 import com.hmily.product.repository.ProductInfoRepository;
 import com.hmily.product.service.ProductService;
+import com.hmily.product.utils.JsonUtil;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductInfoRepository productInfoRepository;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     @Override
     public List<ProductInfo> findUpAll() {
@@ -45,6 +50,14 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void decreaseStock(List<DecreaseStockInput> decreaseStockInputList) {
         List<ProductInfo> productInfoList = decreaseStockProcess(decreaseStockInputList);
+
+        //发送mq消息
+        List<ProductInfoOutput> productInfoOutputList = productInfoList.stream().map(e -> {
+            ProductInfoOutput output = new ProductInfoOutput();
+            BeanUtils.copyProperties(e, output);
+            return output;
+        }).collect(Collectors.toList());
+        amqpTemplate.convertAndSend("productInfo", JsonUtil.toJson(productInfoOutputList));
 
 //        for (CartDTO cartDTO: cartDTOList){
 //            //判断商品是否存在
